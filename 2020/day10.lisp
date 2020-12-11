@@ -55,3 +55,23 @@
     gone-through))
 
 ;;; (day-10-part-1)
+
+;;; Part 1
+
+;;; For example, the following  video was helpful. https://youtu.be/CdPO6BNTrtY
+;;; I don't think that I would have found a way to solve this just by myself.
+
+(defun tribonacci-conversion (c)
+  (cond ((= c 4) 7) ((= c 3) 4) ((= c 2) 2) ((= c 1) 1)) ;;; This is enough here.
+  )
+
+(defun day-10-part-2 (built-in-adapter-joltage)
+  (setq *adapters* (cons (make-instance 'adapter :joltage 0) (sort (read-input-data) #'< :key #'joltage)))
+  (setf (cdr (last *adapters*)) (list (make-instance 'adapter :joltage built-in-adapter-joltage))) ;;; Add also the built-in adapter.
+  ;;; 
+  (let ((differences (loop for i in (mapcar #'joltage *adapters*)
+                           for j in (cdr (mapcar #'joltage *adapters*))
+                           collect (- j i))))
+    (apply #'* (mapcar #'muunna (remove-if #'zerop (mapcar #'length (lw:split-sequence '(#\3) (format nil "~{~A~}" differences))))))))
+
+;;; (day-10-part-2 172)
