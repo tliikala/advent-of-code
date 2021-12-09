@@ -27,3 +27,30 @@
                                  (setf (gethash k ht) 1)))))
     (loop for v being each hash-value of ht
           count (> v 1))))
+
+(defun day-5-part-2 ()
+  (let* ((input (read-input-data))
+         (ht (make-hash-table :test 'equal)))
+    (loop for (x1 y1 x2 y2) in input
+          as slope = nil
+          if (or (= x1 x2) (= y1 y2))
+          do (loop for x from (min x1 x2) to (max x1 x2)
+                   do (loop for y from (min y1 y2) to (max y1 y2)
+                            as k = (format nil "~D-~D" x y)
+                            do (if (gethash k ht) (incf (gethash k ht))
+                                 (setf (gethash k ht) 1))))
+          else if (= (abs (setq slope (/ (- y2 y1) (- x2 x1)))) 1)
+          do
+          (if (plusp slope)
+              (loop for x upfrom (min x1 x2) to (max x1 x2)
+                    as y = (+ (* slope (- x x1)) y1)
+                    as k = (format nil "~D-~D" x y)
+                    do (if (gethash k ht) (incf (gethash k ht))
+                         (setf (gethash k ht) 1)))
+            (loop for x downfrom (max x1 x2) to (min x1 x2)
+                  as y = (+ (* slope (- x x1)) y1)
+                  as k = (format nil "~D-~D" x y)
+                  do (if (gethash k ht) (incf (gethash k ht))
+                       (setf (gethash k ht) 1)))))
+    (loop for v being each hash-value of ht
+          count (> v 1))))
